@@ -1,0 +1,33 @@
+#! /bin/bash
+
+path=$1 
+session_name="myIDE"
+
+function my_help() { 
+	echo "mycode - Open my emulation of premature IDE at designated path"
+	echo "Usage: mycode /path/to/working/directory"
+}
+
+if [[ -z $path ]]; then 
+	my_help
+else
+	if [ -d $path ]; then  
+		window_num=0	
+
+		if [ -z $(tmux ls | grep $session_name) ]; then 
+			tmux new-session -s $session_name \; detach 
+		else 
+			tmux attach -t $session_name\; new-window \; detach
+			(( window_num+=$(tmux display-message -t $session_name -p '#I') ))
+		fi
+		tmux attach -t $session_name \; splitw \; resize-pane -D 10 \; detach 
+		tmux send-keys -t "$session_name:$window_num.0" 'cd '$path Enter
+		tmux send-keys -t "$session_name:$window_num.1" 'cd '$path Enter
+		tmux send-keys -t "$session_name:$window_num.1" 'clear' Enter
+		tmux send-keys -t "$session_name:$window_num.0" 'vim "+Lex"' Enter
+		tmux send-keys -t "$session_name:$window_num.0" ':vertical resize 15' Enter
+		tmux attach -t $session_name:$window_num \; select-pane -t 0
+	else 
+		echo selected path: \"$path\" does not exist
+	fi
+fi
