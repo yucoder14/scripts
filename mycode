@@ -21,6 +21,8 @@ else
 			(( window_num+=$(tmux display-message -t $session_name -p '#I') ))
 		fi
 		tmux attach -t $session_name \; splitw \; resize-pane -D 10 \; detach 
+		tmux send-keys -t "$session_name:$window_num.0" 'cd '$PWD Enter
+		tmux send-keys -t "$session_name:$window_num.1" 'cd '$PWD Enter
 		tmux send-keys -t "$session_name:$window_num.0" 'cd '$path Enter
 		tmux send-keys -t "$session_name:$window_num.1" 'cd '$path Enter
 		tmux send-keys -t "$session_name:$window_num.1" 'clear' Enter

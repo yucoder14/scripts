@@ -1,0 +1,22 @@
+#! /bin/bash
+
+path=$1 
+session_name="myIDE"
+
+function my_help() { 
+	echo "mycode2 - open vim at the path with preconfigure panes"
+	echo "Usage: mycode /path/to/working/directory"
+}
+
+if [[ -z $path ]]; then 
+	my_help
+else
+	if [ -d $path ]; then  
+		window_num=0	
+
+		cd $path
+		vim "+IDE"
+	else 
+		echo selected path: \"$path\" does not exist
+	fi
+fi
